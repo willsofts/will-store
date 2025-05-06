@@ -8,13 +8,15 @@ const EnvironmentVariable_1 = require("./EnvironmentVariable");
 const client_s3_1 = require("@aws-sdk/client-s3");
 const uuid_1 = require("uuid");
 const fs_1 = __importDefault(require("fs"));
-class S3StorageUtility {
+const StorageUtility_1 = require("./StorageUtility");
+class S3StorageUtility extends StorageUtility_1.StorageUtility {
     constructor() {
+        super(...arguments);
         this.client = undefined;
-        this.region = EnvironmentVariable_1.S3_STORAGE_REGION;
+        this.connection = EnvironmentVariable_1.S3_STORAGE_REGION;
         this.bucket = EnvironmentVariable_1.S3_STORAGE_BUCKET;
     }
-    async getClient(regional = this.region) {
+    async getClient(regional = this.connection) {
         if (!this.client) {
             this.client = new client_s3_1.S3Client({
                 region: regional,

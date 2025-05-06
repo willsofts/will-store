@@ -8,8 +8,10 @@ const EnvironmentVariable_1 = require("./EnvironmentVariable");
 const uuid_1 = require("uuid");
 const fs_1 = __importDefault(require("fs"));
 const storage_blob_1 = require("@azure/storage-blob");
-class AzureStorageUtility {
+const StorageUtility_1 = require("./StorageUtility");
+class AzureStorageUtility extends StorageUtility_1.StorageUtility {
     constructor() {
+        super(...arguments);
         this.client = undefined;
         this.connection = EnvironmentVariable_1.AZURE_STORAGE_CONNECTION;
         this.bucket = EnvironmentVariable_1.AZURE_STORAGE_BUCKET;
@@ -20,9 +22,8 @@ class AzureStorageUtility {
         }
         return this.client;
     }
-    async listBucket(client) {
-        if (!client)
-            client = await this.getClient();
+    async listBucket() {
+        const client = await this.getClient();
         const containerNames = [];
         for await (const container of client.listContainers()) {
             containerNames.push(container.name);
