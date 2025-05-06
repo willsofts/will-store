@@ -4,8 +4,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 
 export declare class AzureStorageUtility extends StorageUtility {
     private client;
-    connection: string;
-    bucket: string;
+    constructor(connection?: string, bucket?: string);
     getClient(connection?: string): Promise<BlobServiceClient>;
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<any>;
@@ -17,8 +16,7 @@ export declare class AzureStorageUtility extends StorageUtility {
 
 export declare class S3StorageUtility extends StorageUtility {
     private client;
-    connection: string;
-    bucket: string;
+    constructor(connection?: string, bucket?: string);
     getClient(regional?: string): Promise<S3Client>;
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<any>;

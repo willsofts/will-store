@@ -10,11 +10,13 @@ const uuid_1 = require("uuid");
 const fs_1 = __importDefault(require("fs"));
 const StorageUtility_1 = require("./StorageUtility");
 class S3StorageUtility extends StorageUtility_1.StorageUtility {
-    constructor() {
-        super(...arguments);
+    constructor(connection, bucket) {
+        if (!connection || connection.trim().length == 0)
+            connection = EnvironmentVariable_1.S3_STORAGE_REGION;
+        if (!bucket || bucket.trim().length == 0)
+            bucket = EnvironmentVariable_1.S3_STORAGE_BUCKET;
+        super(connection, bucket);
         this.client = undefined;
-        this.connection = EnvironmentVariable_1.S3_STORAGE_REGION;
-        this.bucket = EnvironmentVariable_1.S3_STORAGE_BUCKET;
     }
     async getClient(regional = this.connection) {
         if (!this.client) {
