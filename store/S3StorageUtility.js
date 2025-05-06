@@ -1,0 +1,98 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.S3StorageUtility = void 0;
+const EnvironmentVariable_1 = require("./EnvironmentVariable");
+const client_s3_1 = require("@aws-sdk/client-s3");
+const uuid_1 = require("uuid");
+const fs_1 = __importDefault(require("fs"));
+class S3StorageUtility {
+    constructor() {
+        this.client = undefined;
+        this.region = EnvironmentVariable_1.S3_STORAGE_REGION;
+        this.bucket = EnvironmentVariable_1.S3_STORAGE_BUCKET;
+    }
+    async getClient(regional = this.region) {
+        if (!this.client) {
+            this.client = new client_s3_1.S3Client({
+                region: regional,
+            });
+        }
+        return this.client;
+    }
+    async listBucket() {
+        const params = {};
+        const command = new client_s3_1.ListBucketsCommand(params);
+        const client = await this.getClient();
+        return await client.send(command);
+    }
+    async listFile(folder, bucket = this.bucket) {
+        const params = folder && folder.trim().length > 0 ? { Bucket: bucket, Prefix: folder } : { Bucket: bucket };
+        const command = new client_s3_1.ListObjectsV2Command(params);
+        const client = await this.getClient();
+        return await client.send(command);
+    }
+    async uploadFile(file, key = (0, uuid_1.v4)(), bucket = this.bucket) {
+        let stream;
+        if (typeof file === 'string') {
+            stream = fs_1.default.createReadStream(file);
+        }
+        else {
+            stream = file;
+        }
+        const params = {
+            Bucket: bucket,
+            Key: key,
+            Body: stream,
+        };
+        const command = new client_s3_1.PutObjectCommand(params);
+        const client = await this.getClient();
+        let data = await client.send(command);
+        return [key, data];
+    }
+    async downloadFile(key, file, bucket = this.bucket) {
+        const params = {
+            Bucket: bucket,
+            Key: key,
+        };
+        const command = new client_s3_1.GetObjectCommand(params);
+        const client = await this.getClient();
+        const data = await client.send(command);
+        if (file) {
+            let stream;
+            if (typeof file === 'string') {
+                stream = fs_1.default.createWriteStream(file);
+            }
+            else {
+                stream = file;
+            }
+            if (data.Body) {
+                data.Body.pipe(stream);
+            }
+        }
+        return data;
+    }
+    async deleteFile(key, bucket = this.bucket) {
+        const params = {
+            Bucket: bucket,
+            Key: key,
+        };
+        const command = new client_s3_1.DeleteObjectCommand(params);
+        const client = await this.getClient();
+        return await client.send(command);
+    }
+    async moveFile(source, target, bucket = this.bucket) {
+        const params = {
+            Bucket: bucket,
+            CopySource: `/${bucket}/${source}`, // need full path
+            Key: target,
+        };
+        const command = new client_s3_1.CopyObjectCommand(params);
+        const client = await this.getClient();
+        await client.send(command);
+        return await this.deleteFile(source, bucket);
+    }
+}
+exports.S3StorageUtility = S3StorageUtility;

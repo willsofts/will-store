@@ -1,0 +1,36 @@
+{
+  "name": "@willsofts/will-store",
+  "version": "1.0.0",
+  "description": "Storage library",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --project ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "S3 Storage",
+    "Azure Storage"
+  ],
+  "author": "tassan_oro@freewillsolutions.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/willsofts/will-store/issues"
+  },
+  "homepage": "https://github.com/willsofts/will-store#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willsofts/will-store.git"
+  },
+  "devDependencies": {
+    "@types/node": "^22.8.4",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.682.0",
+    "@aws-sdk/credential-providers": "^3.682.0",
+    "@aws-sdk/lib-storage": "^3.682.0",
+    "@azure/storage-blob": "^12.27.0",
+    "@willsofts/will-util": "^1.0.26",
+    "uuid": "^11.0.2"
+  }
+}

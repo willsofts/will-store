@@ -1,0 +1,95 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AzureStorageUtility = void 0;
+const EnvironmentVariable_1 = require("./EnvironmentVariable");
+const uuid_1 = require("uuid");
+const fs_1 = __importDefault(require("fs"));
+const storage_blob_1 = require("@azure/storage-blob");
+class AzureStorageUtility {
+    constructor() {
+        this.client = undefined;
+        this.connection = EnvironmentVariable_1.AZURE_STORAGE_CONNECTION;
+        this.bucket = EnvironmentVariable_1.AZURE_STORAGE_BUCKET;
+    }
+    async getClient(connection = this.connection) {
+        if (!this.client) {
+            this.client = storage_blob_1.BlobServiceClient.fromConnectionString(connection);
+        }
+        return this.client;
+    }
+    async listBucket(client) {
+        if (!client)
+            client = await this.getClient();
+        const containerNames = [];
+        for await (const container of client.listContainers()) {
+            containerNames.push(container.name);
+        }
+        return containerNames;
+    }
+    async listFile(folder, bucket = this.bucket) {
+        const client = await this.getClient();
+        const containerClient = client.getContainerClient(bucket);
+        const results = [];
+        let param = folder && folder.trim().length > 0 ? { prefix: folder } : undefined;
+        for await (const blob of containerClient.listBlobsFlat(param)) {
+            console.log("blob:", blob);
+            results.push(blob.name);
+        }
+        return results;
+    }
+    async uploadFile(file, key = (0, uuid_1.v4)(), bucket = this.bucket) {
+        let stream;
+        if (typeof file === 'string') {
+            stream = fs_1.default.createReadStream(file);
+        }
+        else {
+            stream = file;
+        }
+        const client = await this.getClient();
+        const containerClient = client.getContainerClient(bucket);
+        await containerClient.createIfNotExists();
+        const blockBlobClient = containerClient.getBlockBlobClient(key);
+        const data = await blockBlobClient.uploadStream(stream);
+        return [key, data];
+    }
+    async downloadFile(key, file, bucket = this.bucket) {
+        const client = await this.getClient();
+        const containerClient = client.getContainerClient(bucket);
+        const blobClient = containerClient.getBlobClient(key);
+        const data = await blobClient.download();
+        if (file) {
+            let stream;
+            if (typeof file === 'string') {
+                stream = fs_1.default.createWriteStream(file);
+            }
+            else {
+                stream = file;
+            }
+            await new Promise((resolve, reject) => {
+                data.readableStreamBody?.pipe(stream)
+                    .on('finish', resolve)
+                    .on('error', reject);
+            });
+        }
+        return data;
+    }
+    async deleteFile(key, bucket = this.bucket) {
+        const client = await this.getClient();
+        const containerClient = client.getContainerClient(bucket);
+        const blobClient = containerClient.getBlobClient(key);
+        return await blobClient.delete();
+    }
+    async moveFile(source, target, bucket = this.bucket) {
+        const client = await this.getClient();
+        const containerClient = client.getContainerClient(bucket);
+        const sourceBlobClient = containerClient.getBlobClient(source);
+        const targetBlobClient = containerClient.getBlobClient(target);
+        const copyPoller = await targetBlobClient.beginCopyFromURL(sourceBlobClient.url);
+        await copyPoller.pollUntilDone();
+        return await sourceBlobClient.delete();
+    }
+}
+exports.AzureStorageUtility = AzureStorageUtility;
