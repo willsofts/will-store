@@ -7,7 +7,8 @@ export declare class AzureStorageUtility extends StorageUtility {
     constructor(connection?: string, bucket?: string);
     getClient(connection?: string): Promise<BlobServiceClient>;
     listBucket(): Promise<any>;
-    listFile(folder?: string, bucket?: string): Promise<any>;
+    listFile(folder?: string, bucket?: string): Promise<string[]>;
+    listFiles(folder?: string, bucket?: string): Promise<any>;
     uploadFile(file: string | fs.ReadStream, key?: string, bucket?: string): Promise<[string, any]>;
     downloadFile(key: string, file?: string | fs.WriteStream, bucket?: string): Promise<any>;
     deleteFile(key: string, bucket?: string): Promise<any>;
@@ -16,10 +17,13 @@ export declare class AzureStorageUtility extends StorageUtility {
 
 export declare class S3StorageUtility extends StorageUtility {
     private client;
-    constructor(connection?: string, bucket?: string);
+    accessKey: string;
+    secretKey: string;
+    constructor(connection?: string, bucket?: string, accesskey?: string, secretkey?: string);
     getClient(regional?: string): Promise<S3Client>;
     listBucket(): Promise<any>;
-    listFile(folder?: string, bucket?: string): Promise<any>;
+    listFile(folder?: string, bucket?: string): Promise<string[]>;
+    listFiles(folder?: string, bucket?: string): Promise<any>;
     uploadFile(file: string | fs.ReadStream, key?: string, bucket?: string): Promise<[string, any]>;
     downloadFile(key: string, file?: string | fs.WriteStream, bucket?: string): Promise<any>;
     deleteFile(key: string, bucket?: string): Promise<any>;
@@ -31,7 +35,8 @@ export declare class StorageUtility {
     bucket: string;
     constructor(connection?: string, bucket?: string);
     listBucket(): Promise<any>;
-    listFile(folder?: string, bucket?: string): Promise<any>;
+    listFile(folder?: string, bucket?: string): Promise<string[]>;
+    listFiles(folder?: string, bucket?: string): Promise<any>;
     uploadFile(file: string | fs.ReadStream, key?: string, bucket?: string): Promise<[string, any]>;
     downloadFile(key: string, file?: string | fs.WriteStream, bucket?: string): Promise<any>;
     deleteFile(key: string, bucket?: string): Promise<any>;

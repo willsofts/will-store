@@ -14,6 +14,9 @@ class StorageUtility {
         return undefined;
     }
     async listFile(folder, bucket = this.bucket) {
+        return [];
+    }
+    async listFiles(folder, bucket = this.bucket) {
         return undefined;
     }
     async uploadFile(file, key = "", bucket = this.bucket) {

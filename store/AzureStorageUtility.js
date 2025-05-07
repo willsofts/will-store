@@ -33,15 +33,18 @@ class AzureStorageUtility extends StorageUtility_1.StorageUtility {
         return containerNames;
     }
     async listFile(folder, bucket = this.bucket) {
-        const client = await this.getClient();
-        const containerClient = client.getContainerClient(bucket);
         const results = [];
-        let param = folder && folder.trim().length > 0 ? { prefix: folder } : undefined;
-        for await (const blob of containerClient.listBlobsFlat(param)) {
-            console.log("blob:", blob);
+        let data = await this.listFiles(folder, bucket);
+        for await (const blob of data) {
             results.push(blob.name);
         }
         return results;
+    }
+    async listFiles(folder, bucket = this.bucket) {
+        const client = await this.getClient();
+        const containerClient = client.getContainerClient(bucket);
+        let param = folder && folder.trim().length > 0 ? { prefix: folder } : undefined;
+        return containerClient.listBlobsFlat(param);
     }
     async uploadFile(file, key = (0, uuid_1.v4)(), bucket = this.bucket) {
         let stream;
