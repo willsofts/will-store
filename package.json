@@ -1,6 +1,6 @@
 {
   "name": "@willsofts/will-store",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Storage library",
   "main": "index.js",
   "scripts": {

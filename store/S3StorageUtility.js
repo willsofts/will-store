@@ -92,7 +92,11 @@ class S3StorageUtility extends StorageUtility_1.StorageUtility {
                 stream = file;
             }
             if (data.Body) {
-                data.Body.pipe(stream);
+                await new Promise((resolve, reject) => {
+                    data.Body.pipe(stream)
+                        .on('finish', resolve)
+                        .on('error', reject);
+                });
             }
         }
         return data;
