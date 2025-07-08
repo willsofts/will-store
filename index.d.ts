@@ -30,10 +30,24 @@ export declare class S3StorageUtility extends StorageUtility {
     moveFile(source: string, target: string, bucket?: string): Promise<any>;
 }
 
-export declare class StorageUtility {
+export declare class StorageFactory {
+    static getStorage(type?: string): StorageInfo | undefined;
+}
+
+export declare class StorageUtility implements StorageInfo {
     connection: string;
     bucket: string;
     constructor(connection?: string, bucket?: string);
+    listBucket(): Promise<any>;
+    listFile(folder?: string, bucket?: string): Promise<string[]>;
+    listFiles(folder?: string, bucket?: string): Promise<any>;
+    uploadFile(file: string | fs.ReadStream, key?: string, bucket?: string): Promise<[string, any]>;
+    downloadFile(key: string, file?: string | fs.WriteStream, bucket?: string): Promise<any>;
+    deleteFile(key: string, bucket?: string): Promise<any>;
+    moveFile(source: string, target: string, bucket?: string): Promise<any>;
+}
+
+export interface StorageInfo {
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<string[]>;
     listFiles(folder?: string, bucket?: string): Promise<any>;

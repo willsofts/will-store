@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StorageUtility = exports.S3StorageUtility = exports.AzureStorageUtility = void 0;
+exports.StorageFactory = exports.StorageUtility = exports.S3StorageUtility = exports.AzureStorageUtility = void 0;
 var AzureStorageUtility_1 = require("./store/AzureStorageUtility");
 Object.defineProperty(exports, "AzureStorageUtility", { enumerable: true, get: function () { return AzureStorageUtility_1.AzureStorageUtility; } });
 var S3StorageUtility_1 = require("./store/S3StorageUtility");
 Object.defineProperty(exports, "S3StorageUtility", { enumerable: true, get: function () { return S3StorageUtility_1.S3StorageUtility; } });
 var StorageUtility_1 = require("./store/StorageUtility");
 Object.defineProperty(exports, "StorageUtility", { enumerable: true, get: function () { return StorageUtility_1.StorageUtility; } });
+var StorageFactory_1 = require("./store/StorageFactory");
+Object.defineProperty(exports, "StorageFactory", { enumerable: true, get: function () { return StorageFactory_1.StorageFactory; } });
