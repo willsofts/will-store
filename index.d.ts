@@ -48,6 +48,8 @@ export declare class StorageUtility implements StorageInfo {
 }
 
 export interface StorageInfo {
+    connection: string;
+    bucket: string;
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<string[]>;
     listFiles(folder?: string, bucket?: string): Promise<any>;
