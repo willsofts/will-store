@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StorageFactory = void 0;
 class StorageFactory {
-    static getStorage(type = "S3") {
+    static getStorage(type) {
         if (type == "S3") {
             const storage = require("./S3Storage");
             return new storage();
