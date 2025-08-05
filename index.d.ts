@@ -4,7 +4,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 
 export declare class AzureStorageUtility extends StorageUtility {
     private client;
-    constructor(connection?: string, bucket?: string);
+    constructor(connection?: string, bucket?: string, endpoint?: string);
     getClient(connection?: string): Promise<BlobServiceClient>;
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<string[]>;
@@ -19,7 +19,7 @@ export declare class S3StorageUtility extends StorageUtility {
     private client;
     accessKey: string;
     secretKey: string;
-    constructor(connection?: string, bucket?: string, accesskey?: string, secretkey?: string);
+    constructor(connection?: string, bucket?: string, endpoint?: string, accesskey?: string, secretkey?: string);
     getClient(regional?: string): Promise<S3Client>;
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<string[]>;
@@ -37,7 +37,8 @@ export declare class StorageFactory {
 export declare class StorageUtility implements StorageInfo {
     connection: string;
     bucket: string;
-    constructor(connection?: string, bucket?: string);
+    endpoint: string;
+    constructor(connection?: string, bucket?: string, endpoint?: string);
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<string[]>;
     listFiles(folder?: string, bucket?: string): Promise<any>;
@@ -50,6 +51,7 @@ export declare class StorageUtility implements StorageInfo {
 export interface StorageInfo {
     connection: string;
     bucket: string;
+    endpoint: string;
     listBucket(): Promise<any>;
     listFile(folder?: string, bucket?: string): Promise<string[]>;
     listFiles(folder?: string, bucket?: string): Promise<any>;

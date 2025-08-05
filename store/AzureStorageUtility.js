@@ -10,12 +10,12 @@ const fs_1 = __importDefault(require("fs"));
 const storage_blob_1 = require("@azure/storage-blob");
 const StorageUtility_1 = require("./StorageUtility");
 class AzureStorageUtility extends StorageUtility_1.StorageUtility {
-    constructor(connection, bucket) {
+    constructor(connection, bucket, endpoint) {
         if (!connection || connection.trim().length == 0)
             connection = EnvironmentVariable_1.AZURE_STORAGE_CONNECTION;
         if (!bucket || bucket.trim().length == 0)
             bucket = EnvironmentVariable_1.AZURE_STORAGE_BUCKET;
-        super(connection, bucket);
+        super(connection, bucket, endpoint);
         this.client = undefined;
     }
     async getClient(connection = this.connection) {

@@ -2,13 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StorageUtility = void 0;
 class StorageUtility {
-    constructor(connection, bucket) {
+    constructor(connection, bucket, endpoint) {
         this.connection = "";
         this.bucket = "";
+        this.endpoint = "";
         if (connection)
             this.connection = connection;
         if (bucket)
             this.bucket = bucket;
+        if (endpoint)
+            this.endpoint = endpoint;
     }
     async listBucket() {
         return undefined;

@@ -10,12 +10,14 @@ const uuid_1 = require("uuid");
 const fs_1 = __importDefault(require("fs"));
 const StorageUtility_1 = require("./StorageUtility");
 class S3StorageUtility extends StorageUtility_1.StorageUtility {
-    constructor(connection, bucket, accesskey, secretkey) {
+    constructor(connection, bucket, endpoint, accesskey, secretkey) {
         if (!connection || connection.trim().length == 0)
             connection = EnvironmentVariable_1.S3_STORAGE_REGION;
         if (!bucket || bucket.trim().length == 0)
             bucket = EnvironmentVariable_1.S3_STORAGE_BUCKET;
-        super(connection, bucket);
+        if (!endpoint || endpoint.trim().length == 0)
+            endpoint = EnvironmentVariable_1.S3_END_POINT;
+        super(connection, bucket, endpoint);
         this.client = undefined;
         this.accessKey = EnvironmentVariable_1.S3_ACCESS_KEY;
         this.secretKey = EnvironmentVariable_1.S3_SECRET_KEY;
@@ -30,7 +32,12 @@ class S3StorageUtility extends StorageUtility_1.StorageUtility {
             if (this.accessKey && this.accessKey.trim().length > 0 && this.secretKey && this.secretKey.trim().length > 0) {
                 credentials = { accessKeyId: this.accessKey, secretAccessKey: this.secretKey };
             }
-            this.client = new client_s3_1.S3Client(credentials ? { region: regional, credentials } : { region: regional });
+            let settings = credentials ? { region: regional, credentials } : { region: regional };
+            if (this.endpoint && this.endpoint.trim().length > 0) {
+                let options = { endpoint: this.endpoint, forcePathStyle: true };
+                Object.assign(settings, options);
+            }
+            this.client = new client_s3_1.S3Client(settings);
         }
         return this.client;
     }
